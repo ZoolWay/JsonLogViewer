@@ -8,13 +8,7 @@ namespace Zw.JsonLogViewer
     public class AppBootstrapper : BootstrapperBase
     {
 
-        private static readonly log4net.ILog log;
-
-        static AppBootstrapper()
-        {
-            log4net.Config.XmlConfigurator.Configure();
-            log = global::log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        }
+        private static readonly log4net.ILog log = global::log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private SimpleContainer container;
 
