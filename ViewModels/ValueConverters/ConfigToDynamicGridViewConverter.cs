@@ -9,6 +9,12 @@ using System.Windows.Data;
 
 namespace Zw.JsonLogViewer.ViewModels.ValueConverters
 {
+    /// <summary>
+    /// Converts a binding to a ColumnConfig to a GridView the ListView can use.
+    /// </summary>
+    /// <remarks>
+    /// Credits to: https://github.com/9swampy/DynamicPropertyPropertiesListGridViewExample
+    /// </remarks>
     public class ConfigToDynamicGridViewConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

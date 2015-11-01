@@ -12,6 +12,12 @@ using System.Windows.Media;
 
 namespace Zw.JsonLogViewer.ViewModels
 {
+    /// <summary>
+    /// Implements properties to activate some column sorting behaviors.
+    /// </summary>
+    /// <remarks>
+    /// Credits to: https://github.com/9swampy/DynamicPropertyPropertiesListGridViewExample
+    /// </remarks>
     public class GridViewSort
     {
         #region Public attached properties
