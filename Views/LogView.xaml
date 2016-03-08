@@ -10,6 +10,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <vc:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" />
+        <Style x:Key="ItemContainerStyle" TargetType="ListViewItem">
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,6 +23,7 @@
 
         <ListView Grid.Row="0" ItemsSource="{Binding LogEntries}" View="{Binding ColumnConfig, Converter={StaticResource ConfigToDynamicGridViewConverter}}"
             vm:GridViewSort.AutoSort="True" vm:GridViewSort.ShowSortGlyph="True"
+            ItemContainerStyle="{StaticResource ItemContainerStyle}"
             Margin="4" SelectedItem="{Binding SelectedLogEntry}"
             >
         </ListView>
