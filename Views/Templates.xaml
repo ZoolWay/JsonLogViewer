@@ -1,8 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Zw.JsonLogViewer.Views">
+                    xmlns:local="clr-namespace:Zw.JsonLogViewer.Views"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    >
     <DataTemplate x:Key="HeaderTemplate">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="2">
+            <StackPanel.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Show content in detail panel" cal:Message.Attach="ShowInDetailPanel" IsChecked="{Binding IsDetailPanelColumn}" />
+                </ContextMenu>
+            </StackPanel.ContextMenu>
             <TextBlock Text="{Binding Header}" />
             <Separator Height="1" />
             <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" />

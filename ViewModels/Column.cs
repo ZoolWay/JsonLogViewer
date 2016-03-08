@@ -1,11 +1,6 @@
-﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
+﻿using System;
+using Caliburn.Micro;
+using Zw.JsonLogViewer.Events;
 
 namespace Zw.JsonLogViewer.ViewModels
 {
@@ -24,5 +19,13 @@ namespace Zw.JsonLogViewer.ViewModels
         public string EntryKey { get; set; }
 
         public string FilterValue { get; set; }
+
+        public bool IsDetailPanelColumn { get; set; }
+
+        public void ShowInDetailPanel()
+        {
+            var eventAggregator = IoC.Get<IEventAggregator>();
+            eventAggregator.PublishOnUIThread(new SetDetailPanelKeyMessage(this, this.EntryKey));
+        }
     }
 }

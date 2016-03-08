@@ -1,10 +1,8 @@
 using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
+using Zw.JsonLogViewer.Events;
 
 namespace Zw.JsonLogViewer.ViewModels
 {
@@ -14,6 +12,8 @@ namespace Zw.JsonLogViewer.ViewModels
         private const string TITLE = "Zw.JsonLogViewer";
 
         private static readonly log4net.ILog log = global::log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private readonly IEventAggregator eventAggregator;
 
         public bool IsAutoRefreshEnabled { get; set; }
 
@@ -31,6 +31,7 @@ namespace Zw.JsonLogViewer.ViewModels
         {
             this.IsLoading = true;
             this.IsLogLoaded = false;
+            this.eventAggregator = IoC.Get<IEventAggregator>();
         }
 
         public void CloseApplication()
@@ -57,6 +58,11 @@ namespace Zw.JsonLogViewer.ViewModels
             this.LogView.ClearFilters();
         }
 
+        public void ResetDetailPanelKey()
+        {
+            this.eventAggregator.PublishOnUIThread(new SetDetailPanelKeyMessage(this, null));
+        }
+
         protected async override void OnInitialize()
         {
             this.LogView = new LogViewModel();
@@ -81,8 +87,15 @@ namespace Zw.JsonLogViewer.ViewModels
             }
         }
 
+        protected override void OnActivate()
+        {
+            ScreenExtensions.TryActivate(this.LogView);
+        }
+
         protected override void OnDeactivate(bool close)
         {
+            ScreenExtensions.TryDeactivate(this.LogView, close);
+
             if (!close) return;
 
             Properties.Settings.Default.AutoRefresh = this.IsAutoRefreshEnabled;

@@ -83,6 +83,7 @@
     </ApplicationDefinition>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Events\BaseEvent.cs" />
+    <Compile Include="Events\SetDetailPanelKeyMessage.cs" />
     <Compile Include="IShell.cs" />
     <Compile Include="Parsing\LogFile.cs" />
     <Compile Include="Parsing\LogEntry.cs" />

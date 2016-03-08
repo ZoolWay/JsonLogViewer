@@ -7,15 +7,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
+using Zw.JsonLogViewer.Events;
 using Zw.JsonLogViewer.Parsing;
 
 namespace Zw.JsonLogViewer.ViewModels
 {
-    public class LogViewModel : Screen
+    public class LogViewModel : Screen, IHandle<SetDetailPanelKeyMessage>
     {
 
         private static readonly log4net.ILog log = global::log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        private readonly IEventAggregator eventAggregator;
         private readonly Parsing.Parser defaultParser;
         private readonly BindableCollection<LogEntry> logEntries;
         private readonly ICollectionView logEntriesView;
@@ -23,6 +25,7 @@ namespace Zw.JsonLogViewer.ViewModels
         private string currentSearchText;
         private LogEntry selectedLogEntry;
         private bool refreshViewOnFilterChange;
+        private string selectedDetailPanelKey;
 
         public string SelectionDisplay { get; set; }
 
@@ -44,6 +47,7 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public LogViewModel()
         {
+            this.eventAggregator = IoC.Get<IEventAggregator>();
             this.defaultParser = new Parsing.Parser();
             this.ColumnConfig = new ColumnConfig();
             this.logEntries = new BindableCollection<LogEntry>();
@@ -51,6 +55,17 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntriesView.Filter = LogEntriesFilter;
             this.culture = CultureInfo.InvariantCulture;
             this.refreshViewOnFilterChange = true;
+            this.selectedDetailPanelKey = null;
+        }
+
+        public void Handle(SetDetailPanelKeyMessage message)
+        {
+            this.selectedDetailPanelKey = message.Key;
+            UpdateSelectionDisplay();
+            foreach (var column in this.ColumnConfig.Columns)
+            {
+                column.IsDetailPanelColumn = (column.EntryKey == this.selectedDetailPanelKey);
+            }
         }
 
         internal void Search(string searchText)
@@ -104,6 +119,19 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntriesView.Refresh();
         }
 
+        protected override void OnInitialize()
+        {
+            this.eventAggregator.Subscribe(this);
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            if (close)
+            {
+                this.eventAggregator.Unsubscribe(this);
+            }
+        }
+
         private void NotifyColumnChanged(object sender, PropertyChangedEventArgs e)
         {
             if ((e.PropertyName == "FilterValue") && (this.refreshViewOnFilterChange))
@@ -147,8 +175,22 @@ namespace Zw.JsonLogViewer.ViewModels
                 return;
             }
 
-            var json = JsonConvert.SerializeObject(this.selectedLogEntry, Formatting.Indented);
-            this.SelectionDisplay = json;
+            if (this.selectedDetailPanelKey != null)
+            {
+                if (this.selectedLogEntry.ContainsKey(this.selectedDetailPanelKey))
+                {
+                    this.SelectionDisplay = Convert.ToString(this.selectedLogEntry[this.selectedDetailPanelKey], this.culture);
+                }
+                else
+                {
+                    this.SelectionDisplay = String.Format("(selected entry misses an entry for '{0}')", this.selectedDetailPanelKey);
+                }
+            }
+            else
+            {
+                var json = JsonConvert.SerializeObject(this.selectedLogEntry, Formatting.Indented);
+                this.SelectionDisplay = json;
+            }
         }
 
     }

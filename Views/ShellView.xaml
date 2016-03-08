@@ -22,6 +22,7 @@
             <MenuItem Header="View">
                 <MenuItem Header="Auto Refresh" IsCheckable="True" IsChecked="{Binding IsAutoRefreshEnabled}" />
                 <MenuItem Header="Clear all filters" cal:Message.Attach="ClearFilters" />
+                <MenuItem Header="Reset detail panel to show complete message" cal:Message.Attach="ResetDetailPanelKey" />
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Header="Load last log on startup" IsCheckable="True" IsChecked="{Binding IsLoadLastOnStartupEnabled}" />
