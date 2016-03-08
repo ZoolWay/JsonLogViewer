@@ -51,6 +51,12 @@ namespace Zw.JsonLogViewer.ViewModels
             OpenLogFile(ofd.FileName);
         }
 
+        public void ClearFilters()
+        {
+            this.SearchText = String.Empty;
+            this.LogView.ClearFilters();
+        }
+
         protected async override void OnInitialize()
         {
             this.LogView = new LogViewModel();

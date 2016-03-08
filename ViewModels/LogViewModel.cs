@@ -6,9 +6,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using Zw.JsonLogViewer.Parsing;
 
@@ -25,6 +22,7 @@ namespace Zw.JsonLogViewer.ViewModels
         private readonly CultureInfo culture;
         private string currentSearchText;
         private LogEntry selectedLogEntry;
+        private bool refreshViewOnFilterChange;
 
         public string SelectionDisplay { get; set; }
 
@@ -52,6 +50,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntriesView = CollectionViewSource.GetDefaultView(this.logEntries);
             this.logEntriesView.Filter = LogEntriesFilter;
             this.culture = CultureInfo.InvariantCulture;
+            this.refreshViewOnFilterChange = true;
         }
 
         internal void Search(string searchText)
@@ -93,9 +92,21 @@ namespace Zw.JsonLogViewer.ViewModels
             return true;
         }
 
+        internal void ClearFilters()
+        {
+            this.currentSearchText = String.Empty;
+            this.refreshViewOnFilterChange = false;
+            foreach (var column in this.ColumnConfig.Columns)
+            {
+                column.FilterValue = String.Empty;
+            }
+            this.refreshViewOnFilterChange = true;
+            this.logEntriesView.Refresh();
+        }
+
         private void NotifyColumnChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "FilterValue")
+            if ((e.PropertyName == "FilterValue") && (this.refreshViewOnFilterChange))
             {
                 this.logEntriesView.Refresh();
             }
