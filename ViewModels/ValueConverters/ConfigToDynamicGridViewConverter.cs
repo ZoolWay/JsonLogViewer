@@ -22,7 +22,7 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
             var config = value as ColumnConfig;
             if (config != null)
             {
-                var grdiView = new GridView();
+                var gridView = new GridView();
 
                 if (config.Columns != null)
                 {
@@ -31,10 +31,10 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
                         var binding = new Binding(column.DataField);
                         GridViewColumn gvc = new GridViewColumn { Header = column.Header, DisplayMemberBinding = binding };
                         gvc.SetValue(GridViewSort.PropertyNameProperty, binding.Path.Path);
-                        grdiView.Columns.Add(gvc);
+                        gridView.Columns.Add(gvc);
                     }
                 }
-                return grdiView;
+                return gridView;
             }
             return Binding.DoNothing;
         }
