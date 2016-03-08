@@ -31,6 +31,7 @@ namespace Zw.JsonLogViewer.Parsing
                     while ((line = stream.ReadLine()) != null)
                     {
                         var entryAttributes = JsonConvert.DeserializeObject<LogEntry>(line);
+                        EliminateSubJsonObjects(entryAttributes);
                         entries.Add(entryAttributes);
                         lineCount++;
                     }
@@ -53,5 +54,24 @@ namespace Zw.JsonLogViewer.Parsing
             }
         }
 
+        private void EliminateSubJsonObjects(LogEntry entryAttributes)
+        {
+            var replacements = new Dictionary<string, string>();
+            foreach (var kvp in entryAttributes)
+            {
+                var jobject = kvp.Value as Newtonsoft.Json.Linq.JObject;
+                if (jobject != null)
+                {
+                    replacements[kvp.Key] = jobject.ToString(Formatting.None);
+                }
+            }
+            if (replacements.Any())
+            {
+                foreach (var kvp in replacements)
+                {
+                    entryAttributes[kvp.Key] = kvp.Value;
+                }
+            }
+        }
     }
 }
