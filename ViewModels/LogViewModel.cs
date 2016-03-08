@@ -92,7 +92,7 @@ namespace Zw.JsonLogViewer.ViewModels
                 }
             }
 
-            List<Column> columns = logfile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak), EntryKey = ak }).ToList();
+            List<Column> columns = logfile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak), EntryKey = ak, IsVisible = true }).ToList();
             this.ColumnConfig.Columns = columns;
 
             foreach (var column in columns)
@@ -117,6 +117,14 @@ namespace Zw.JsonLogViewer.ViewModels
             }
             this.refreshViewOnFilterChange = true;
             this.logEntriesView.Refresh();
+        }
+
+        internal void ShowAllColumns()
+        {
+            foreach (var column in this.ColumnConfig.Columns)
+            {
+                column.IsVisible = true;
+            }
         }
 
         protected override void OnInitialize()

@@ -63,6 +63,11 @@ namespace Zw.JsonLogViewer.ViewModels
             this.eventAggregator.PublishOnUIThread(new SetDetailPanelKeyMessage(this, null));
         }
 
+        public void ShowAllColumns()
+        {
+            this.LogView.ShowAllColumns();
+        }
+
         protected async override void OnInitialize()
         {
             this.LogView = new LogViewModel();

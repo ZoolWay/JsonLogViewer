@@ -8,6 +8,7 @@
             <StackPanel.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Show content in detail panel" cal:Message.Attach="ShowInDetailPanel" IsChecked="{Binding IsDetailPanelColumn}" />
+                    <MenuItem Header="Show column" IsCheckable="True" IsChecked="{Binding IsVisible}" />
                 </ContextMenu>
             </StackPanel.ContextMenu>
             <TextBlock Text="{Binding Header}" />

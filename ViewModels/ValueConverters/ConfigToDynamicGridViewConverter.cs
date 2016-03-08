@@ -18,6 +18,9 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
     /// </remarks>
     public class ConfigToDynamicGridViewConverter : IValueConverter
     {
+
+        private readonly ColumnIsVisibleToWidthConverter columnIsVisibleToWidthConverter = new ColumnIsVisibleToWidthConverter();
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var config = value as ColumnConfig;
@@ -30,9 +33,13 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
                 {
                     foreach (var column in config.Columns)
                     {
-                        var binding = new Binding(column.DataField);
-                        GridViewColumn gvc = new GridViewColumn { Header = column, DisplayMemberBinding = binding };
-                        gvc.SetValue(GridViewSort.PropertyNameProperty, binding.Path.Path);
+                        var bindingDisplayMember = new Binding(column.DataField);
+                        GridViewColumn gvc = new GridViewColumn { Header = column, DisplayMemberBinding = bindingDisplayMember };
+                        var bindingWidth = new Binding("IsVisible");
+                        bindingWidth.Source = column;
+                        bindingWidth.Converter = this.columnIsVisibleToWidthConverter;
+                        BindingOperations.SetBinding(gvc, GridViewColumn.WidthProperty, bindingWidth);
+                        gvc.SetValue(GridViewSort.PropertyNameProperty, bindingDisplayMember.Path.Path);
                         gridView.Columns.Add(gvc);
                     }
                 }

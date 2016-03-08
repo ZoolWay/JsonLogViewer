@@ -97,6 +97,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\ValueConverters\ColumnIsVisibleToWidthConverter.cs" />
     <Compile Include="ViewModels\ValueConverters\ConfigToDynamicGridViewConverter.cs" />
     <Compile Include="Views\LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>

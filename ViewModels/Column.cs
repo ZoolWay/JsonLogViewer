@@ -22,6 +22,8 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public bool IsDetailPanelColumn { get; set; }
 
+        public bool IsVisible { get; set; }
+
         public void ShowInDetailPanel()
         {
             var eventAggregator = IoC.Get<IEventAggregator>();
