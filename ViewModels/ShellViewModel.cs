@@ -90,7 +90,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.DisplayName = TITLE;
             try
             {
-                bool openedLog = await this.LogView.OpenLog(filename);
+                bool openedLog = await Task.Run(() => this.LogView.OpenLog(filename));
                 if (openedLog)
                 {
                     this.DisplayName = String.Format("{0} [{1}]", TITLE, filename);

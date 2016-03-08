@@ -57,7 +57,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntriesView.Refresh();
         }
 
-        internal async Task<bool> OpenLog(string filename)
+        internal bool OpenLog(string filename)
         {
             log.DebugFormat("Opening log '{0}'", filename);
 
