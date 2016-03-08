@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Zw.JsonLogViewer.ViewModels
         private readonly Parsing.Parser defaultParser;
         private readonly BindableCollection<LogEntry> logEntries;
         private readonly ICollectionView logEntriesView;
+        private readonly CultureInfo culture;
         private string currentSearchText;
         private LogEntry selectedLogEntry;
 
@@ -49,6 +51,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntries = new BindableCollection<LogEntry>();
             this.logEntriesView = CollectionViewSource.GetDefaultView(this.logEntries);
             this.logEntriesView.Filter = LogEntriesFilter;
+            this.culture = CultureInfo.InvariantCulture;
         }
 
         internal void Search(string searchText)
@@ -67,8 +70,22 @@ namespace Zw.JsonLogViewer.ViewModels
             var logfile = defaultParser.ParseLogFile(filename);
             if (logfile == null) return false;
 
-            List<Column> columns = logfile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak) }).ToList();
+            if (this.ColumnConfig.Columns != null)
+            {
+                foreach (var column in this.ColumnConfig.Columns)
+                {
+                    column.PropertyChanged -= NotifyColumnChanged;
+                }
+            }
+
+            List<Column> columns = logfile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak), EntryKey = ak }).ToList();
             this.ColumnConfig.Columns = columns;
+
+            foreach (var column in columns)
+            {
+                column.PropertyChanged += NotifyColumnChanged;
+            }
+
             NotifyOfPropertyChange(() => ColumnConfig);
 
             this.logEntries.AddRange(logfile.Entries);
@@ -76,12 +93,32 @@ namespace Zw.JsonLogViewer.ViewModels
             return true;
         }
 
+        private void NotifyColumnChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "FilterValue")
+            {
+                this.logEntriesView.Refresh();
+            }
+        }
+
         protected bool LogEntriesFilter(object obj)
         {
-            if (String.IsNullOrWhiteSpace(this.currentSearchText)) return true;
             LogEntry entry = obj as LogEntry;
             if (entry == null) return true;
 
+            var relevantColums = this.ColumnConfig.Columns.Where(c => !String.IsNullOrWhiteSpace(c.FilterValue));
+            if (relevantColums.Any())
+            {
+                foreach (var relevantColumn in relevantColums)
+                {
+                    if (!entry.ContainsKey(relevantColumn.EntryKey)) return false;
+                    var entryValue = Convert.ToString(entry[relevantColumn.EntryKey], this.culture);
+                    int idx = this.culture.CompareInfo.IndexOf(entryValue, relevantColumn.FilterValue, CompareOptions.IgnoreCase);
+                    if (idx < 0) return false;
+                }
+            }
+
+            if (String.IsNullOrWhiteSpace(this.currentSearchText)) return true;
             foreach (var kvp in entry)
             {
                 var str = Convert.ToString(kvp.Value);

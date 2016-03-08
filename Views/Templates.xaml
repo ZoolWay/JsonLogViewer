@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Zw.JsonLogViewer.Views">
+    <DataTemplate x:Key="HeaderTemplate">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="2">
+            <TextBlock Text="{Binding Header}" />
+            <Separator Height="1" />
+            <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" />
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

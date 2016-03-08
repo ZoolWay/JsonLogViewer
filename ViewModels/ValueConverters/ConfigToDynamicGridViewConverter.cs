@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -23,13 +24,14 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
             if (config != null)
             {
                 var gridView = new GridView();
-
+                gridView.ColumnHeaderContainerStyle = Application.Current.FindResource("HeaderContainerStyle") as Style;
+                gridView.ColumnHeaderTemplate = Application.Current.FindResource("HeaderTemplate") as DataTemplate;
                 if (config.Columns != null)
                 {
                     foreach (var column in config.Columns)
                     {
                         var binding = new Binding(column.DataField);
-                        GridViewColumn gvc = new GridViewColumn { Header = column.Header, DisplayMemberBinding = binding };
+                        GridViewColumn gvc = new GridViewColumn { Header = column, DisplayMemberBinding = binding };
                         gvc.SetValue(GridViewSort.PropertyNameProperty, binding.Path.Path);
                         gridView.Columns.Add(gvc);
                     }
