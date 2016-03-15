@@ -25,6 +25,16 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public string SearchText { get; set; }
 
+        public string CurrentLogFile { get; set; }
+
+        public bool CanReload
+        {
+            get
+            {
+                return !String.IsNullOrWhiteSpace(this.CurrentLogFile);
+            }
+        }
+
         public LogViewModel LogView { get; protected set; }
 
         public ShellViewModel()
@@ -32,6 +42,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.IsLoading = true;
             this.IsLogLoaded = false;
             this.eventAggregator = IoC.Get<IEventAggregator>();
+            this.CurrentLogFile = null;
         }
 
         public void CloseApplication()
@@ -50,6 +61,11 @@ namespace Zw.JsonLogViewer.ViewModels
             if (!ofd.ShowDialog().GetValueOrDefault(false)) return;
             log.DebugFormat("Selected file '{0}'", ofd.FileName);
             OpenLogFile(ofd.FileName);
+        }
+
+        public void Reload()
+        {
+            OpenLogFile(this.CurrentLogFile);
         }
 
         public void ClearFilters()
@@ -119,6 +135,11 @@ namespace Zw.JsonLogViewer.ViewModels
                 {
                     this.DisplayName = String.Format("{0} [{1}]", TITLE, filename);
                     Properties.Settings.Default.LastLogfile = filename;
+                    this.CurrentLogFile = filename;
+                }
+                else
+                {
+                    this.CurrentLogFile = null;
                 }
                 this.IsLogLoaded = openedLog;
             }

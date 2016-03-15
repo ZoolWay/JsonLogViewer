@@ -17,6 +17,7 @@
         <Menu Grid.Row="0" Padding="4">
             <MenuItem Header="Log">
                 <MenuItem Header="Open" cal:Message.Attach="OpenLog" />
+                <MenuItem Header="Reload" cal:Message.Attach="Reload" />
                 <MenuItem Header="Close" cal:Message.Attach="CloseApplication" />
             </MenuItem>
             <MenuItem Header="View">
