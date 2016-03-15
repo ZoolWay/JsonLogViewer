@@ -26,16 +26,19 @@ namespace Zw.JsonLogViewer.Parsing
             {
                 int lineCount = 0;
                 string line;
-                using (var stream = new StreamReader(filename))
+                using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    while ((line = stream.ReadLine()) != null)
+                    using (var stream = new StreamReader(fileStream))
                     {
-                        var entryAttributes = JsonConvert.DeserializeObject<LogEntry>(line);
-                        EliminateSubJsonObjects(entryAttributes);
-                        entries.Add(entryAttributes);
-                        lineCount++;
+                        while ((line = stream.ReadLine()) != null)
+                        {
+                            var entryAttributes = JsonConvert.DeserializeObject<LogEntry>(line);
+                            EliminateSubJsonObjects(entryAttributes);
+                            entries.Add(entryAttributes);
+                            lineCount++;
+                        }
+                        stream.Close();
                     }
-                    stream.Close();
                 }
                 log.DebugFormat("Parsed {0} lines into {1} log entries", lineCount, entries.Count);
 
