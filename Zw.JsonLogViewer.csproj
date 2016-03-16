@@ -90,6 +90,7 @@
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="ViewModels\Column.cs" />
     <Compile Include="ViewModels\ColumnConfig.cs" />
+    <Compile Include="ViewModels\FilterSet.cs" />
     <Compile Include="ViewModels\GridViewSort.cs" />
     <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />

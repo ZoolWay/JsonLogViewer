@@ -60,12 +60,12 @@ namespace Zw.JsonLogViewer.ViewModels
             var ofd = new Microsoft.Win32.OpenFileDialog();
             if (!ofd.ShowDialog().GetValueOrDefault(false)) return;
             log.DebugFormat("Selected file '{0}'", ofd.FileName);
-            OpenLogFile(ofd.FileName);
+            OpenLogFile(ofd.FileName, false);
         }
 
         public void Reload()
         {
-            OpenLogFile(this.CurrentLogFile);
+            OpenLogFile(this.CurrentLogFile, true);
         }
 
         public void ClearFilters()
@@ -99,7 +99,7 @@ namespace Zw.JsonLogViewer.ViewModels
                 if (File.Exists(lastLogFile))
                 {
                     log.InfoFormat("Loading last-used logfile: '{0}'", lastLogFile);
-                    OpenLogFile(lastLogFile);
+                    OpenLogFile(lastLogFile, false);
                 }
                 else
                 {
@@ -124,12 +124,14 @@ namespace Zw.JsonLogViewer.ViewModels
             Properties.Settings.Default.Save();
         }
 
-        protected async void OpenLogFile(string filename)
+        protected async void OpenLogFile(string filename, bool preserveFilters)
         {
             this.IsLoading = true;
             this.DisplayName = TITLE;
             try
             {
+                FilterSet filters = null;
+                if (preserveFilters) filters = this.LogView.GetCurrentFilters();
                 bool openedLog = await Task.Run(() => this.LogView.OpenLog(filename));
                 if (openedLog)
                 {
@@ -141,6 +143,8 @@ namespace Zw.JsonLogViewer.ViewModels
                 {
                     this.CurrentLogFile = null;
                 }
+                if ((preserveFilters) && (filters != null))
+                    this.LogView.ApplyFilters(filters);
                 this.IsLogLoaded = openedLog;
             }
             finally

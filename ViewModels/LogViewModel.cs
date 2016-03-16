@@ -119,6 +119,30 @@ namespace Zw.JsonLogViewer.ViewModels
             this.logEntriesView.Refresh();
         }
 
+        internal FilterSet GetCurrentFilters()
+        {
+            FilterSet filters = new FilterSet();
+            filters.GlobalSearchText = this.currentSearchText;
+            foreach (var column in this.ColumnConfig.Columns)
+            {
+                if (String.IsNullOrWhiteSpace(column.FilterValue)) continue;
+                filters.ColumnFilters[column.DataField] = column.FilterValue;
+            }
+            return filters;
+        }
+
+        internal void ApplyFilters(FilterSet filters)
+        {
+            this.currentSearchText = filters.GlobalSearchText;
+            this.refreshViewOnFilterChange = false;
+            foreach (var column in this.ColumnConfig.Columns)
+            {
+                column.FilterValue = filters.ColumnFilters.GetValueOrDefault(column.DataField) ?? String.Empty;
+            }
+            this.refreshViewOnFilterChange = true;
+            this.logEntriesView.Refresh();
+        }
+
         internal void ShowAllColumns()
         {
             foreach (var column in this.ColumnConfig.Columns)
