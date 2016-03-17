@@ -58,5 +58,17 @@ namespace Zw.JsonLogViewer.Properties {
                 this["LastLogfile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[]")]
+        public string MruFiles {
+            get {
+                return ((string)(this["MruFiles"]));
+            }
+            set {
+                this["MruFiles"] = value;
+            }
+        }
     }
 }

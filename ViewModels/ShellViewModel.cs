@@ -1,6 +1,9 @@
 using Caliburn.Micro;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Zw.JsonLogViewer.Events;
 
@@ -11,9 +14,13 @@ namespace Zw.JsonLogViewer.ViewModels
 
         private const string TITLE = "Zw.JsonLogViewer";
 
+        private const int MAX_MRU_LENGTH = 10;
+
         private static readonly log4net.ILog log = global::log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IEventAggregator eventAggregator;
+
+        private readonly BindableCollection<string> mruFiles;
 
         public bool IsAutoRefreshEnabled { get; set; }
 
@@ -43,6 +50,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.IsLogLoaded = false;
             this.eventAggregator = IoC.Get<IEventAggregator>();
             this.CurrentLogFile = null;
+            this.mruFiles = new BindableCollection<string>();
         }
 
         public void CloseApplication()
@@ -90,6 +98,8 @@ namespace Zw.JsonLogViewer.ViewModels
             this.DisplayName = TITLE;
             this.IsAutoRefreshEnabled = Properties.Settings.Default.AutoRefresh;
             this.IsLoadLastOnStartupEnabled = Properties.Settings.Default.LoadLastOnStartup;
+            string[] mruFilesArray = JsonConvert.DeserializeObject<string[]>(Properties.Settings.Default.MruFiles);
+            this.mruFiles.AddRange(mruFilesArray);
             await Task.Delay(250);
             this.IsLoading = false;
 
@@ -121,6 +131,7 @@ namespace Zw.JsonLogViewer.ViewModels
 
             Properties.Settings.Default.AutoRefresh = this.IsAutoRefreshEnabled;
             Properties.Settings.Default.LoadLastOnStartup = this.IsLoadLastOnStartupEnabled;
+            Properties.Settings.Default.MruFiles = JsonConvert.SerializeObject(this.mruFiles.Take(MAX_MRU_LENGTH).ToArray(), Formatting.None);
             Properties.Settings.Default.Save();
         }
 
@@ -138,6 +149,7 @@ namespace Zw.JsonLogViewer.ViewModels
                     this.DisplayName = String.Format("{0} [{1}]", TITLE, filename);
                     Properties.Settings.Default.LastLogfile = filename;
                     this.CurrentLogFile = filename;
+                    if (!this.mruFiles.Contains(filename)) this.mruFiles.Insert(0, filename);
                 }
                 else
                 {
