@@ -34,6 +34,16 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public string CurrentLogFile { get; set; }
 
+        public BindableCollection<string> MruFiles
+        {
+            get { return this.mruFiles; }
+        }
+
+        public bool CanShowMruFiles
+        {
+            get { return true && this.mruFiles.Count > 0; }
+        }
+
         public bool CanReload
         {
             get
@@ -51,6 +61,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.eventAggregator = IoC.Get<IEventAggregator>();
             this.CurrentLogFile = null;
             this.mruFiles = new BindableCollection<string>();
+            this.mruFiles.CollectionChanged += ((sender, e) => NotifyOfPropertyChange(() => CanShowMruFiles));
         }
 
         public void CloseApplication()
@@ -90,6 +101,11 @@ namespace Zw.JsonLogViewer.ViewModels
         public void ShowAllColumns()
         {
             this.LogView.ShowAllColumns();
+        }
+
+        public void OpenMruFile(string mruFile)
+        {
+            OpenLogFile(this.CurrentLogFile, false);
         }
 
         protected async override void OnInitialize()
