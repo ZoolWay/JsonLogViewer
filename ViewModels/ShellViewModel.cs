@@ -117,7 +117,7 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public void OpenMruFile(string mruFile)
         {
-            OpenLogFile(this.CurrentLogFile, false);
+            OpenLogFile(mruFile, false);
         }
 
         protected async override void OnInitialize()
