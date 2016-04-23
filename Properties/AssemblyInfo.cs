@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Zw.JsonLogViewer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("http://github.com/ZoolWay")]
 [assembly: AssemblyProduct("Zw.JsonLogViewer")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © ZoolWay 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
