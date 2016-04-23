@@ -19,8 +19,13 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
         private readonly ColumnIsVisibleToWidthConverter columnIsVisibleToWidthConverter = new ColumnIsVisibleToWidthConverter();
         private readonly StripMultiLineConverter stripMultiLineConverter = new StripMultiLineConverter();
 
-        [AutoDependencyProperty]
-        public bool IsStripMultiLinesInList { get; set; }
+        public static readonly DependencyProperty IsStripMultiLinesInListProperty = DependencyProperty.Register("IsStripMultiLinesInList", typeof(bool), typeof(ConfigToDynamicGridViewConverter));
+
+        public bool IsStripMultiLinesInList
+        {
+            get { return (bool)GetValue(IsStripMultiLinesInListProperty); }
+            set { SetValue(IsStripMultiLinesInListProperty, value); }
+        }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

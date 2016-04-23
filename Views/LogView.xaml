@@ -7,12 +7,14 @@
              xmlns:vc="clr-namespace:Zw.JsonLogViewer.ViewModels.ValueConverters"
              xmlns:vm="clr-namespace:Zw.JsonLogViewer.ViewModels"
              mc:Ignorable="d" 
+             Name="LogViewRoot"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <vc:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" IsStripMultiLinesInList="{Binding RelativeSource={RelativeSource Self}}" />
         <Style x:Key="ItemContainerStyle" TargetType="ListViewItem">
             <Setter Property="VerticalContentAlignment" Value="Top" />
         </Style>
+        <FrameworkElement x:Key="ProxyElement" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=local:ShellView}}" />
+        <vc:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" IsStripMultiLinesInList="{Binding Path=DataContext.IsStripMultiLinesInList, Source={StaticResource ProxyElement}, PresentationTraceSources.TraceLevel=High}" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,6 +22,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="120" />
         </Grid.RowDefinitions>
+
+        <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
 
         <ListView Grid.Row="0" ItemsSource="{Binding LogEntries}" View="{Binding ColumnConfig, Converter={StaticResource ConfigToDynamicGridViewConverter}}"
             vm:GridViewSort.AutoSort="True" vm:GridViewSort.ShowSortGlyph="True"

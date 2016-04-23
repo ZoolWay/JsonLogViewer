@@ -1,7 +1,6 @@
 using Caliburn.Micro;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,11 +21,22 @@ namespace Zw.JsonLogViewer.ViewModels
 
         private readonly BindableCollection<string> mruFiles;
 
+        private bool isStripMultiLinesInList;
+
         public bool IsAutoRefreshEnabled { get; set; }
 
         public bool IsLoadLastOnStartupEnabled { get; set; }
 
-        public bool IsStripMultiLinesInList { get; set; }
+        public bool IsStripMultiLinesInList
+        {
+            get { return this.isStripMultiLinesInList; }
+            set
+            {
+                if (this.isStripMultiLinesInList == value) return;
+                this.isStripMultiLinesInList = value;
+                if (this.LogView != null) this.LogView.ViewRefresh();
+            }
+        }
 
         public bool IsLoading { get; set; }
 

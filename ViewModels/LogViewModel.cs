@@ -33,6 +33,8 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public ColumnConfig ColumnConfig { get; protected set; }
 
+        public bool IsStripMultiLinesInList { get; set; }
+
         public LogEntry SelectedLogEntry
         {
             get { return this.selectedLogEntry; }
@@ -66,6 +68,12 @@ namespace Zw.JsonLogViewer.ViewModels
             {
                 column.IsDetailPanelColumn = (column.EntryKey == this.selectedDetailPanelKey);
             }
+        }
+
+        internal void ViewRefresh()
+        {
+            //this.logEntriesView.Refresh();
+            NotifyOfPropertyChange(() => ColumnConfig);
         }
 
         internal void Search(string searchText)
