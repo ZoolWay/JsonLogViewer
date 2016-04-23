@@ -105,6 +105,7 @@
     <Compile Include="ViewModels\ValueConverters\ColumnIsVisibleToWidthConverter.cs" />
     <Compile Include="ViewModels\ValueConverters\ConfigToDynamicGridViewConverter.cs" />
     <Compile Include="ViewModels\ValueConverters\FileNameShortenerConverter.cs" />
+    <Compile Include="ViewModels\ValueConverters\StripMultiLineConverter.cs" />
     <Compile Include="Views\LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>
     </Compile>

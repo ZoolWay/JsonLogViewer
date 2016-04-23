@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <vc:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" />
+        <vc:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" IsStripMultiLinesInList="{Binding RelativeSource={RelativeSource Self}}" />
         <Style x:Key="ItemContainerStyle" TargetType="ListViewItem">
             <Setter Property="VerticalContentAlignment" Value="Top" />
         </Style>

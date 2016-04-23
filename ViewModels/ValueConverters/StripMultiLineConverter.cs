@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
 namespace Zw.JsonLogViewer.ViewModels.ValueConverters
 {
-    public class ColumnIsVisibleToWidthConverter : DependencyObject, IValueConverter
+    public class StripMultiLineConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is bool)) return Binding.DoNothing;
-
-            var isVisible = (bool)value;
-            return isVisible ? Double.NaN : 0.0;
+            string data = value as string;
+            if (data == null) return value;
+            int stripIndex = data.IndexOfAny(new[] { '\r', '\n' });
+            if (stripIndex < 0) return data;
+            return data.Substring(0, stripIndex);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

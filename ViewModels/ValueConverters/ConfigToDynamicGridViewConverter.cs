@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AutoDependencyPropertyMarker;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,10 +13,14 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
     /// <remarks>
     /// Credits to: https://github.com/9swampy/DynamicPropertyPropertiesListGridViewExample
     /// </remarks>
-    public class ConfigToDynamicGridViewConverter : IValueConverter
+    public class ConfigToDynamicGridViewConverter : DependencyObject, IValueConverter
     {
 
         private readonly ColumnIsVisibleToWidthConverter columnIsVisibleToWidthConverter = new ColumnIsVisibleToWidthConverter();
+        private readonly StripMultiLineConverter stripMultiLineConverter = new StripMultiLineConverter();
+
+        [AutoDependencyProperty]
+        public bool IsStripMultiLinesInList { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -34,6 +35,8 @@ namespace Zw.JsonLogViewer.ViewModels.ValueConverters
                     foreach (var column in config.Columns)
                     {
                         var bindingDisplayMember = new Binding(column.DataField);
+                        if (IsStripMultiLinesInList)
+                            bindingDisplayMember.Converter = stripMultiLineConverter;
                         GridViewColumn gvc = new GridViewColumn { Header = column, DisplayMemberBinding = bindingDisplayMember };
                         var bindingWidth = new Binding("IsVisible");
                         bindingWidth.Source = column;
