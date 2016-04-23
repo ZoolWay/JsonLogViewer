@@ -26,6 +26,8 @@ namespace Zw.JsonLogViewer.ViewModels
 
         public bool IsLoadLastOnStartupEnabled { get; set; }
 
+        public bool IsStripMultiLinesInList { get; set; }
+
         public bool IsLoading { get; set; }
 
         public bool IsLogLoaded { get; set; }
@@ -114,6 +116,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.DisplayName = TITLE;
             this.IsAutoRefreshEnabled = Properties.Settings.Default.AutoRefresh;
             this.IsLoadLastOnStartupEnabled = Properties.Settings.Default.LoadLastOnStartup;
+            this.IsStripMultiLinesInList = Properties.Settings.Default.StripMultiLinesInList;
             string[] mruFilesArray = JsonConvert.DeserializeObject<string[]>(Properties.Settings.Default.MruFiles);
             this.mruFiles.AddRange(mruFilesArray);
             await Task.Delay(250);
@@ -148,6 +151,7 @@ namespace Zw.JsonLogViewer.ViewModels
             Properties.Settings.Default.AutoRefresh = this.IsAutoRefreshEnabled;
             Properties.Settings.Default.LoadLastOnStartup = this.IsLoadLastOnStartupEnabled;
             Properties.Settings.Default.MruFiles = JsonConvert.SerializeObject(this.mruFiles.Take(MAX_MRU_LENGTH).ToArray(), Formatting.None);
+            Properties.Settings.Default.StripMultiLinesInList = this.IsStripMultiLinesInList;
             Properties.Settings.Default.Save();
         }
 
