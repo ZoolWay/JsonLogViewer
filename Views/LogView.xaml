@@ -23,7 +23,7 @@
             <RowDefinition Height="120" />
         </Grid.RowDefinitions>
 
-        <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
+        <ContentControl Grid.Row="0" Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
 
         <ListView Grid.Row="0" ItemsSource="{Binding LogEntries}" View="{Binding ColumnConfig, Converter={StaticResource ConfigToDynamicGridViewConverter}}"
             vm:GridViewSort.AutoSort="True" vm:GridViewSort.ShowSortGlyph="True"
@@ -35,6 +35,21 @@
         <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" />
 
         <TextBox Grid.Row="2" x:Name="SelectionDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Consolas" IsReadOnly="True" />
-        
+
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#A0000000" Visibility="{Binding ShowErrorMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Width="640" Background="White">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="8" />
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="8" />
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock x:Name="ErrorMessage" />
+                <Button HorizontalAlignment="Right" Padding="4" x:Name="CommitError">Commit</Button>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </UserControl>

@@ -88,6 +88,7 @@
     <Compile Include="Parsing\LogFile.cs" />
     <Compile Include="Parsing\LogEntry.cs" />
     <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Parsing\ParseResult.cs" />
     <Compile Include="ViewModels\Column.cs" />
     <Compile Include="ViewModels\ColumnConfig.cs" />
     <Compile Include="ViewModels\FilterSet.cs" />

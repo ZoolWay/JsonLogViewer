@@ -26,6 +26,8 @@ namespace Zw.JsonLogViewer.ViewModels
         private LogEntry selectedLogEntry;
         private bool refreshViewOnFilterChange;
         private string selectedDetailPanelKey;
+        private bool showErrorMessage;
+        private string errorMessage;
 
         public string SelectionDisplay { get; set; }
 
@@ -47,6 +49,28 @@ namespace Zw.JsonLogViewer.ViewModels
             }
         }
 
+        public bool ShowErrorMessage
+        {
+            get { return showErrorMessage; }
+            set
+            {
+                if (value == showErrorMessage) return;
+                showErrorMessage = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get { return errorMessage; }
+            set
+            {
+                if (value == errorMessage) return;
+                errorMessage = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
         public LogViewModel()
         {
             this.eventAggregator = IoC.Get<IEventAggregator>();
@@ -58,6 +82,7 @@ namespace Zw.JsonLogViewer.ViewModels
             this.culture = CultureInfo.InvariantCulture;
             this.refreshViewOnFilterChange = true;
             this.selectedDetailPanelKey = null;
+            this.showErrorMessage = false;
         }
 
         public void Handle(SetDetailPanelKeyMessage message)
@@ -68,6 +93,11 @@ namespace Zw.JsonLogViewer.ViewModels
             {
                 column.IsDetailPanelColumn = (column.EntryKey == this.selectedDetailPanelKey);
             }
+        }
+
+        public void CommitError()
+        {
+            this.ShowErrorMessage = false;
         }
 
         internal void ViewRefresh()
@@ -89,8 +119,13 @@ namespace Zw.JsonLogViewer.ViewModels
             this.currentSearchText = String.Empty;
             this.logEntries.Clear();
 
-            var logfile = defaultParser.ParseLogFile(filename);
-            if (logfile == null) return false;
+            var parseResult = defaultParser.ParseLogFile(filename);
+            if (!parseResult.Success)
+            {
+                this.ErrorMessage = parseResult.ErrorMessage;
+                this.ShowErrorMessage = true;
+                return false;
+            }
 
             if (this.ColumnConfig.Columns != null)
             {
@@ -100,7 +135,7 @@ namespace Zw.JsonLogViewer.ViewModels
                 }
             }
 
-            List<Column> columns = logfile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak), EntryKey = ak, IsVisible = true }).ToList();
+            List<Column> columns = parseResult.LogFile.Keys.Select(ak => new Column() { Header = ak, DataField = String.Format("[{0}]", ak), EntryKey = ak, IsVisible = true }).ToList();
             this.ColumnConfig.Columns = columns;
 
             foreach (var column in columns)
@@ -110,7 +145,7 @@ namespace Zw.JsonLogViewer.ViewModels
 
             NotifyOfPropertyChange(() => ColumnConfig);
 
-            this.logEntries.AddRange(logfile.Entries);
+            this.logEntries.AddRange(parseResult.LogFile.Entries);
 
             return true;
         }

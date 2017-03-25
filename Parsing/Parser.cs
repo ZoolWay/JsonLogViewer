@@ -18,7 +18,7 @@ namespace Zw.JsonLogViewer.Parsing
 
         }
 
-        public LogFile ParseLogFile(string filename)
+        public ParseResult<LogFile> ParseLogFile(string filename)
         {
             List<LogEntry> entries = new List<LogEntry>();
             log.DebugFormat("Parsing log file '{0}'", filename);
@@ -48,12 +48,12 @@ namespace Zw.JsonLogViewer.Parsing
                 LogFile logfile = new LogFile(filename);
                 logfile.Entries.AddRange(entries);
                 logfile.Keys.AddRange(allKeys);
-                return logfile;
+                return new ParseResult<LogFile>(logfile);
             }
             catch (Exception ex)
             {
                 log.Error("Failed to parse log file", ex);
-                return null;
+                return new ParseResult<LogFile>(String.Format("Failed to parse log file: {0}", ex.Message));
             }
         }
 

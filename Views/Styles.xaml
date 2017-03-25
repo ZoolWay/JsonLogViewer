@@ -3,5 +3,6 @@
                     xmlns:local="clr-namespace:Zw.JsonLogViewer.Views">
     <Style x:Key="HeaderContainerStyle" TargetType="GridViewColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    </Style>    
+    </Style>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 </ResourceDictionary>
