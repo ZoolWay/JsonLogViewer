@@ -25,17 +25,24 @@ namespace Zw.JsonLogViewer.Parsing
             try
             {
                 int lineCount = 0;
-                string line;
                 using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     using (var stream = new StreamReader(fileStream))
                     {
+                        string line;
                         while ((line = stream.ReadLine()) != null)
                         {
+                            lineCount++;
+                            line = line.Trim(' ', '\0');
+                            if (String.IsNullOrWhiteSpace(line)) continue; // skip empty lines
                             var entryAttributes = JsonConvert.DeserializeObject<LogEntry>(line);
+                            if (entryAttributes == null)
+                            {
+                                log.WarnFormat("Could not deserialize line {0}", lineCount+1);
+                                continue;
+                            }
                             EliminateSubJsonObjects(entryAttributes);
                             entries.Add(entryAttributes);
-                            lineCount++;
                         }
                         stream.Close();
                     }
